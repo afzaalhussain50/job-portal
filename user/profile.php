@@ -122,6 +122,7 @@ require_once("../db.php");
                 <input type="text" class="form-control" id="stream" name="stream" placeholder="stream" value="<?php echo $row['stream']; ?>">
               </div>
           </div>
+
           <div class="row">
             <div class="col-md-4 col-md-offset-4 well">
               <div class="form-group">
@@ -145,6 +146,11 @@ require_once("../db.php");
               </div>
             </div>
           </div>
+                  <?php
+              }
+            }
+          ?>
+          </form>
 
 
           <div class="row">
@@ -174,8 +180,61 @@ require_once("../db.php");
                   </table>
               </div>
           </div>
+          <div class="row">
+                  <div class="col-md-12 well">
+                      <div class="panel-heading">
+                          <div class="row">
+                              <div class="col-md-10">
+                                  <h3 class="panel-title"></h3>
+                              </div>
+                              <div class="col-md-2" align="right">
+                                  <button type="button" name="add" id="addEdu" class="btn btn-success">Add Education</button>
+                              </div>
+                          </div>
+                      </div>
+                      <table id="eduList" class="table table-bordered table-striped">
+                          <thead>
+                          <tr>
+                              <th>Degree</th>
+                              <th>Institute</th>
+                              <th>From</th>
+                              <th>To</th>
+                              <th>Obtained Marks</th>
+                              <th>Total Marks</th>
+                              <th></th>
+                              <th></th>
+                          </tr>
+                          </thead>
+                      </table>
+                  </div>
+              </div>
+          <div class="row">
+              <div class="col-md-12 well">
+                  <div class="panel-heading">
+                      <div class="row">
+                          <div class="col-md-10">
+                              <h3 class="panel-title"></h3>
+                          </div>
+                          <div class="col-md-2" align="right">
+                              <button type="button" name="add" id="addCer" class="btn btn-success">Add Certificate</button>
+                          </div>
+                      </div>
+                  </div>
+                  <table id="cerList" class="table table-bordered table-striped">
+                      <thead>
+                      <tr>
+                          <th>Certificate</th>
+                          <th>Date</th>
+                          <th>Description</th>
+                          <th></th>
+                          <th></th>
+                      </tr>
+                      </thead>
+                  </table>
+              </div>
+          </div>
 
-          </form>
+
 
             <div id="expModal" class="modal fade">
                 <div class="modal-dialog">
@@ -187,16 +246,16 @@ require_once("../db.php");
                             </div>
                             <div class="modal-body">
                                 <div class="form-group"
-                                <label for="designation" class="control-label">Designation</label>
+                                <label for="designation1" class="control-label">Designation</label>
                                 <input type="text" class="form-control" id="designation1" name="designation" placeholder="Designation">
                             </div>
                             <div class="form-group">
-                                <label for="org_name" class="control-label">Org.Name</label>
-                                <input type="text" class="form-control" id="org_name" name="org_name" placeholder="Org_name">
+                                <label for="org_name" class="control-label">Org. Name</label>
+                                <input type="text" class="form-control"  id="org_name" name="org_name" placeholder="Org. Name">
                             </div>
                             <div class="form-group">
                                 <label for="description" class="control-label">Description</label>
-                                <input type="text" class="form-control"  id="description" name="description" placeholder="Description">
+                                <input type="textarea" class="form-control"  id="description" name="description" required>
                             </div>
                             <div class="form-group">
                                 <label for="from_date" class="control-label">From</label>
@@ -204,7 +263,7 @@ require_once("../db.php");
                             </div>
                             <div class="form-group">
                                 <label for="to_date" class="control-label">To</label>
-                                <input type="date" class="form-control" id="to_date" name="to_date" >
+                                <input type="date" class="form-control"  id="to_date" name="to_date" required>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -213,20 +272,88 @@ require_once("../db.php");
                             <input type="submit" name="save" id="save" class="btn btn-info" value="Save" />
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
+                    </form>
                 </div>
-            </div>
+            </div></div>
+            <div id="eduModal" class="modal fade">
+                <div class="modal-dialog">
+                    <form method="post" id="eduForm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title"><i class="fa fa-plus"></i> Edit User</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group"
+                                <label for="degree" class="control-label">Degree</label>
+                                <input type="text" class="form-control" id="degree" name="degree" placeholder="Degree">
+                            </div>
+                            <div class="form-group">
+                                <label for="institute" class="control-label">Institute</label>
+                                <input type="text" class="form-control"  id="institute" name="institute" placeholder="Institute">
+                            </div>
 
-        </div>
-      </div>
+                            <div class="form-group">
+                                <label for="from_date" class="control-label">From</label>
+                                <input type="date" class="form-control"  id="from_date_edu" name="from_date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="to_date" class="control-label">To</label>
+                                <input type="date" class="form-control"  id="to_date_edu" name="to_date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="obtained_marks" class="control-label">Obtained Marks</label>
+                                <input type="text" class="form-control"  id="obtained_marks" name="obtained_marks" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="total_marks" class="control-label">Total Marks</label>
+                                <input type="text" class="form-control"  id="total_marks" name="total_marks" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" name="eduId" id="eduId" />
+                            <input type="hidden" name="action" id="actionEdu" value="" />
+                            <input type="submit" name="saveEdu" id="saveEdu" class="btn btn-info" value="Save" />
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div></div>
+            <div id="cerModal" class="modal fade">
+                <div class="modal-dialog">
+                    <form method="post" id="cerForm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title"><i class="fa fa-plus"></i> Edit User</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group"
+                                <label for="certificate" class="control-label">Certificate</label>
+                                <input type="text" class="form-control" id="certificate" name="certificate" placeholder="Certificate">
+                            </div>
+                            <div class="form-group">
+                                <label for="cer_description" class="control-label">Description</label>
+                                <input type="text" class="form-control"  id="cer_description" name="description" placeholder="Description">
+                            </div>
+                            <div class="form-group">
+                                <label for="certification_date" class="control-label">Certification Date</label>
+                                <input type="date" class="form-control"  id="certification_date" name="certification_date" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" name="cerId" id="cerId" />
+                            <input type="hidden" name="action" id="actionCer" value="" />
+                            <input type="submit" name="saveCer" id="saveCer" class="btn btn-info" value="Save" />
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div></div>
 
-              
-            <?php
-                }
-              }
-            ?>                   
-            </form>
+
+
           </div>
-        </div>
       </div>
     </section>
 

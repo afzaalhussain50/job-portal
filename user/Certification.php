@@ -1,17 +1,12 @@
 <?php
-//require('config.php');
-//Including Database Connection From db.php file to avoid rewriting in all files
-//require_once("../db.php");
 //To Handle Session Variables on This Page
 if(session_status() !== PHP_SESSION_ACTIVE){session_start();};
-
-
-class Exp extends Dbconfig{
+class Certification extends Dbconfig{
     protected $hostName;
     protected $userName;
     protected $password;
     protected $dbName;
-    private $expTable = 'user_experience';
+    private $expTable = 'user_certifications';
     private $dbConnect;
     public function __construct(){
         if(!$this->dbConnect){
@@ -47,17 +42,15 @@ class Exp extends Dbconfig{
         $numRows = mysqli_num_rows($result);
         return $numRows;
     }
-    public function expList(){
+    public function cerList(){
         $user_id = $_SESSION['id_user'];
         $sqlQuery = "SELECT * FROM ".$this->expTable." WHERE user_id=".$user_id." ";
 
         if(!empty($_POST["search"]["value"])){
             $sqlQuery .= 'where(id LIKE "%'.$_POST["search"]["value"].'%" ';
-            $sqlQuery .= ' OR designation LIKE "%'.$_POST["search"]["value"].'%" ';
-            $sqlQuery .= ' OR org_name LIKE "%'.$_POST["search"]["value"].'%" ';
+            $sqlQuery .= ' OR certificate LIKE "%'.$_POST["search"]["value"].'%" ';
+            $sqlQuery .= ' OR certification_date LIKE "%'.$_POST["search"]["value"].'%" ';
             $sqlQuery .= ' OR description LIKE "%'.$_POST["search"]["value"].'%" ';
-            $sqlQuery .= ' OR from_date LIKE "%'.$_POST["search"]["value"].'%") ';
-            $sqlQuery .= ' OR to_date LIKE "%'.$_POST["search"]["value"].'%") ';
         }
         if(!empty($_POST["order"])){
             $sqlQuery .= 'ORDER BY '.$_POST['order']['0']['column'].' '.$_POST['order']['0']['dir'].' ';
@@ -77,11 +70,9 @@ class Exp extends Dbconfig{
         $expData = array();
         while( $exp = mysqli_fetch_assoc($result) ) {
             $expRows = array();
-            $expRows[] = $exp['designation'];
-            $expRows[] = $exp['org_name'];
+            $expRows[] = $exp['certificate'];
+            $expRows[] = $exp['certification_date'];
             $expRows[] = $exp['description'];
-            $expRows[] = $exp['from_date'];
-            $expRows[] = $exp['to_date'];
             $expRows[] = '<button type="button" name="update" id="'.$exp["id"].'" class="btn btn-warning btn-xs update">Update</button>';
             $expRows[] = '<button type="button" name="delete" id="'.$exp["id"].'" class="btn btn-danger btn-xs delete" >Delete</button>';
             $expData[] = $expRows;
@@ -94,37 +85,37 @@ class Exp extends Dbconfig{
         );
         echo json_encode($output);
     }
-    public function getExp(){
-        if($_POST["expId"]) {
+    public function getCer(){
+        if($_POST["cerId"]) {
             $sqlQuery = "
 				SELECT * FROM ".$this->expTable." 
-				WHERE id = '".$_POST["expId"]."'";
+				WHERE id = '".$_POST["cerId"]."'";
             $result = mysqli_query($this->dbConnect, $sqlQuery);
             $row = mysqli_fetch_assoc($result);
             echo json_encode($row);
         }
     }
-    public function updateExp(){
-        if($_POST['expId'])
+    public function updateCer(){
+        if($_POST['cerId'])
         {
             $updateQuery = "UPDATE ".$this->expTable." 
-			SET designation = '".$_POST["designation"]."', org_name = '".$_POST["org_name"]."', description = '".$_POST["description"]."', from_date = '".$_POST["from_date"]."' , to_date = '".$_POST["to_date"]."'
-			WHERE id ='".$_POST["expId"]."'";
+			SET certificate = '".$_POST["certificate"]."', certification_date = '".$_POST["certification_date"]."', description = '".$_POST["description"]."'
+			WHERE id ='".$_POST["cerId"]."'";
             $isUpdated = mysqli_query($this->dbConnect, $updateQuery);
-            print_r('updated');
         }
     }
-    public function addExp(){
+    public function addCer(){
         $user_id = $_SESSION['id_user'];
-        $insertQuery = "INSERT INTO ".$this->expTable." (designation, org_name, description, from_date, to_date, user_id) 
-			VALUES ('".$_POST["designation"]."', '".$_POST["org_name"]."', '".$_POST["description"]."', '".$_POST["from_date"]."', '".$_POST["to_date"]."', '".$user_id."')";
+        $insertQuery = "INSERT INTO ".$this->expTable." (certificate, certification_date, description, user_id) 
+			VALUES ('".$_POST["certificate"]."', '".$_POST["certification_date"]."', '".$_POST["description"]."', '".$user_id."')";
         $isUpdated = mysqli_query($this->dbConnect, $insertQuery);
+        //print_r('added');
     }
-    public function deleteExp(){
-        if($_POST["expId"]) {
+    public function deleteCer(){
+        if($_POST["cerId"]) {
             $sqlDelete = "
 				DELETE FROM ".$this->expTable."
-				WHERE id = '".$_POST["expId"]."'";
+				WHERE id = '".$_POST["cerId"]."'";
             mysqli_query($this->dbConnect, $sqlDelete);
         }
     }

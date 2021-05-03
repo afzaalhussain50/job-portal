@@ -1,17 +1,12 @@
 <?php
-//require('config.php');
-//Including Database Connection From db.php file to avoid rewriting in all files
-//require_once("../db.php");
 //To Handle Session Variables on This Page
 if(session_status() !== PHP_SESSION_ACTIVE){session_start();};
-
-
-class Exp extends Dbconfig{
+class Education extends Dbconfig{
     protected $hostName;
     protected $userName;
     protected $password;
     protected $dbName;
-    private $expTable = 'user_experience';
+    private $table = 'user_education';
     private $dbConnect;
     public function __construct(){
         if(!$this->dbConnect){
@@ -47,17 +42,18 @@ class Exp extends Dbconfig{
         $numRows = mysqli_num_rows($result);
         return $numRows;
     }
-    public function expList(){
+    public function eduList(){
         $user_id = $_SESSION['id_user'];
-        $sqlQuery = "SELECT * FROM ".$this->expTable." WHERE user_id=".$user_id." ";
+        $sqlQuery = "SELECT * FROM ".$this->table." WHERE user_id=".$user_id." ";
 
         if(!empty($_POST["search"]["value"])){
             $sqlQuery .= 'where(id LIKE "%'.$_POST["search"]["value"].'%" ';
-            $sqlQuery .= ' OR designation LIKE "%'.$_POST["search"]["value"].'%" ';
-            $sqlQuery .= ' OR org_name LIKE "%'.$_POST["search"]["value"].'%" ';
-            $sqlQuery .= ' OR description LIKE "%'.$_POST["search"]["value"].'%" ';
-            $sqlQuery .= ' OR from_date LIKE "%'.$_POST["search"]["value"].'%") ';
-            $sqlQuery .= ' OR to_date LIKE "%'.$_POST["search"]["value"].'%") ';
+            $sqlQuery .= ' OR degree LIKE "%'.$_POST["search"]["value"].'%" ';
+            $sqlQuery .= ' OR institute LIKE "%'.$_POST["search"]["value"].'%" ';
+            $sqlQuery .= ' OR from_date LIKE "%'.$_POST["search"]["value"].'%" ';
+            $sqlQuery .= ' OR to_date LIKE "%'.$_POST["search"]["value"].'%" ';
+            $sqlQuery .= ' OR obtained_marks LIKE "%'.$_POST["search"]["value"].'%" ';
+            $sqlQuery .= ' OR total_marks LIKE "%'.$_POST["search"]["value"].'%" ';
         }
         if(!empty($_POST["order"])){
             $sqlQuery .= 'ORDER BY '.$_POST['order']['0']['column'].' '.$_POST['order']['0']['dir'].' ';
@@ -70,61 +66,62 @@ class Exp extends Dbconfig{
         $result = mysqli_query($this->dbConnect, $sqlQuery);
         $numRows = mysqli_num_rows($result);
 
-        $sqlQueryTotal = "SELECT * FROM ".$this->expTable." WHERE user_id=".$user_id." ";
+        $sqlQueryTotal = "SELECT * FROM ".$this->table." WHERE user_id=".$user_id." ";
         $resultTotal = mysqli_query($this->dbConnect, $sqlQueryTotal);
         $numRowsTotal = mysqli_num_rows($resultTotal);
 
-        $expData = array();
-        while( $exp = mysqli_fetch_assoc($result) ) {
-            $expRows = array();
-            $expRows[] = $exp['designation'];
-            $expRows[] = $exp['org_name'];
-            $expRows[] = $exp['description'];
-            $expRows[] = $exp['from_date'];
-            $expRows[] = $exp['to_date'];
-            $expRows[] = '<button type="button" name="update" id="'.$exp["id"].'" class="btn btn-warning btn-xs update">Update</button>';
-            $expRows[] = '<button type="button" name="delete" id="'.$exp["id"].'" class="btn btn-danger btn-xs delete" >Delete</button>';
-            $expData[] = $expRows;
+        $eduData = array();
+        while( $edu = mysqli_fetch_assoc($result) ) {
+            $eduRows = array();
+            $eduRows[] = $edu['degree'];
+            $eduRows[] = $edu['institute'];
+            $eduRows[] = $edu['from_date'];
+            $eduRows[] = $edu['to_date'];
+            $eduRows[] = $edu['obtained_marks'];
+            $eduRows[] = $edu['total_marks'];
+            $eduRows[] = '<button type="button" name="update" id="'.$edu["id"].'" class="btn btn-warning btn-xs update">Update</button>';
+            $eduRows[] = '<button type="button" name="delete" id="'.$edu["id"].'" class="btn btn-danger btn-xs delete" >Delete</button>';
+            $eduData[] = $eduRows;
         }
         $output = array(
             "draw"	=>	intval($_POST["draw"]),
             "iTotalRecords"	=> 	$numRows,
             "iTotalDisplayRecords"	=>  $numRowsTotal,
-            "data"	=> 	$expData
+            "data"	=> 	$eduData
         );
         echo json_encode($output);
     }
-    public function getExp(){
-        if($_POST["expId"]) {
+    public function getEdu(){
+        if($_POST["eduId"]) {
             $sqlQuery = "
-				SELECT * FROM ".$this->expTable." 
-				WHERE id = '".$_POST["expId"]."'";
+				SELECT * FROM ".$this->table." 
+				WHERE id = '".$_POST["eduId"]."'";
             $result = mysqli_query($this->dbConnect, $sqlQuery);
             $row = mysqli_fetch_assoc($result);
             echo json_encode($row);
         }
     }
-    public function updateExp(){
-        if($_POST['expId'])
+    public function updateEdu(){
+        if($_POST['eduId'])
         {
-            $updateQuery = "UPDATE ".$this->expTable." 
-			SET designation = '".$_POST["designation"]."', org_name = '".$_POST["org_name"]."', description = '".$_POST["description"]."', from_date = '".$_POST["from_date"]."' , to_date = '".$_POST["to_date"]."'
-			WHERE id ='".$_POST["expId"]."'";
+            $updateQuery = "UPDATE ".$this->table." 
+			SET degree = '".$_POST["degree"]."', institute = '".$_POST["institute"]."', from_date = '".$_POST["from_date"]."', to_date = '".$_POST["to_date"]."', obtained_marks = '".$_POST["obtained_marks"]."', total_marks = '".$_POST["total_marks"]."'
+			WHERE id ='".$_POST["eduId"]."'";
             $isUpdated = mysqli_query($this->dbConnect, $updateQuery);
-            print_r('updated');
         }
     }
-    public function addExp(){
+    public function addEdu(){
         $user_id = $_SESSION['id_user'];
-        $insertQuery = "INSERT INTO ".$this->expTable." (designation, org_name, description, from_date, to_date, user_id) 
-			VALUES ('".$_POST["designation"]."', '".$_POST["org_name"]."', '".$_POST["description"]."', '".$_POST["from_date"]."', '".$_POST["to_date"]."', '".$user_id."')";
+        $insertQuery = "INSERT INTO ".$this->table." (degree, institute, from_date, to_date, obtained_marks, total_marks, user_id) 
+			VALUES ('".$_POST["degree"]."', '".$_POST["institute"]."', '".$_POST["from_date"]."',  '".$_POST["to_date"]."', '".$_POST["obtained_marks"]."', '".$_POST["total_marks"]."','".$user_id."')";
         $isUpdated = mysqli_query($this->dbConnect, $insertQuery);
+        //print_r('added');
     }
-    public function deleteExp(){
-        if($_POST["expId"]) {
+    public function deleteEdu(){
+        if($_POST["eduId"]) {
             $sqlDelete = "
-				DELETE FROM ".$this->expTable."
-				WHERE id = '".$_POST["expId"]."'";
+				DELETE FROM ".$this->table."
+				WHERE id = '".$_POST["eduId"]."'";
             mysqli_query($this->dbConnect, $sqlDelete);
         }
     }
